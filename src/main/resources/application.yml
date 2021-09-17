@@ -2,7 +2,7 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: after_route
+        - id: host_route
           uri: https://example.org
           predicates:
-            - Host=**.somedfsdfsdfhost,**.anotherhrererererost.org
+            - Host=**.somehost.org,**.anotherhost.org
