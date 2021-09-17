@@ -1,8 +1,0 @@
-spring:
-  cloud:
-    gateway:
-      routes:
-        - id: host_route
-          uri: https://example.org
-          predicates:
-            - Host=**.somehost.org,**.anotherhost.org
