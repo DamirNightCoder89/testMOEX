@@ -1,7 +1,11 @@
 package com.damirkan.shareservice.model;
 
+import com.damirkan.shareservice.util.CustomDesirializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import java.util.List;
 
+//@JsonDeserialize(using = CustomDesirializer.class)
 public class Shares {
     private List<Share> shares;
 

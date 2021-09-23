@@ -37,8 +37,8 @@ import static org.springframework.hateoas.server.reactive.WebFluxLinkBuilder.met
 @RestController
 public class MainController {
 
-    String uri_list = "https://iss.moex.com/iss/engines/stock/markets/shares/securities.json?iss.meta=off&iss.version=off&iss.json=extended&iss.only=marketdata&marketdata.columns=SECID";
-    String uri = "https://iss.moex.com/iss/engines/stock/markets/shares/securities.json?securities=GAZP&iss.meta=off&iss.version=off&iss.only=marketdata&marketdata.columns=,BOARDID,SECID,LAST";
+    String uri_list = "https://iss.moex.com/iss/engines/stock/markets/shares/securities.json?iss.meta=off&iss.version=off&iss.json=extended&iss.only=marketdata&marketdata.columns=SECID,LAST";
+    String uri = "https://iss.moex.com/iss/engines/stock/markets/shares/securities.json?securities=GAZP&iss.meta=off&iss.version=off&iss.only=marketdata&marketdata.columns=SECID,LAST";
     WebClient webClient = WebClient.create();
     String jsoni = "[\n" +
             "{\"charsetinfo\": {\"name\": \"utf-8\"}},\n" +
@@ -316,7 +316,7 @@ public class MainController {
     @GetMapping("/shares/{id}")
     public Mono<String> retrive(@PathVariable Long id) {
         Mono<String> response = webClient.get()
-                .uri(uri)
+                .uri(uri_list)
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(String.class).log();
@@ -328,16 +328,16 @@ public class MainController {
     @GetMapping("/shares")
     public   Shares retrivee() throws JsonProcessingException {
 
-        ObjectMapper mapper = new ObjectMapper();
-        SimpleModule module = new SimpleModule("CustomDes", new Version(1, 0, 0, null, null, null));
-
-        module.addDeserializer(Shares.class, new CustomDes());
-        mapper.registerModule(module);
-        Shares shares = mapper.readValue(jsoni, Shares.class);
-        List<Share> shares1 = shares.getShares();
-        for (Share share : shares1) {
-            System.out.println(share.getId());
-        }
+//        ObjectMapper mapper = new ObjectMapper();
+//        SimpleModule module = new SimpleModule("CustomDes", new Version(1, 0, 0, null, null, null));
+//
+//        module.addDeserializer(Shares.class, new CustomDes());
+//        mapper.registerModule(module);
+//        Shares shares = mapper.readValue(jsoni, Shares.class);
+//        List<Share> shares1 = shares.getShares();
+//        for (Share share : shares1) {
+//            System.out.println(share.getId());
+//        }
 
         Mono<Shares> response = webClient.get()
                 .uri(uri_list)
@@ -345,11 +345,12 @@ public class MainController {
                 .retrieve()
                 .bodyToMono(Shares.class);
 
-
-
-        return response.block();
-
-
+        Shares shares = response.block();
+        List<Share> sharelist = shares.getShares();
+        for (Share share : sharelist) {
+            System.out.println(share.getId());
+        }
+        return shares;
     }
 
     @GetMapping("/something")
