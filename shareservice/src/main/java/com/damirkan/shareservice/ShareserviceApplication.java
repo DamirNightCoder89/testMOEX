@@ -25,6 +25,8 @@ import org.springframework.web.reactive.config.WebFluxConfigurer;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 
 @SpringBootApplication
@@ -82,19 +84,21 @@ class CustomDesirializer extends StdDeserializer<Shares> {
 	@Override
 	public Shares deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
 		Shares shares = new Shares();
+		List<Share> map = new ArrayList<>();
 		JsonNode nextElement;
 		ObjectCodec codec = jsonParser.getCodec();
 		JsonNode node = codec.readTree(jsonParser);
-		if (node.path("marketdata").isMissingNode()) {
-			System.out.println("There is one");
-		}
+
 		Iterator<JsonNode> rootElements = node.elements();
 		while (rootElements.hasNext()) {
 			nextElement = rootElements.next();
 			if(nextElement.has("marketdata")) {
-
+				map = StreamSupport.stream(nextElement.path("marketdata").spliterator(), false).map(a -> {
+					return new Share(a.get("SECID").asText(), a.get("LAST").asText());
+				}).collect(Collectors.toList());
 			}
 		}
+		shares.setShares(map);
 		return shares;
 	}
 

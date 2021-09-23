@@ -1,6 +1,7 @@
 package com.damirkan.shareservice.controllers;
 
 import com.damirkan.shareservice.ShareserviceApplication;
+import com.damirkan.shareservice.model.Share;
 import com.damirkan.shareservice.model.Shares;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -26,10 +27,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -328,7 +326,7 @@ public class MainController {
     }
 
     @GetMapping("/shares")
-    public   String retrivee() throws JsonProcessingException {
+    public   Shares retrivee() throws JsonProcessingException {
 
         ObjectMapper mapper = new ObjectMapper();
         SimpleModule module = new SimpleModule("CustomDes", new Version(1, 0, 0, null, null, null));
@@ -336,17 +334,20 @@ public class MainController {
         module.addDeserializer(Shares.class, new CustomDes());
         mapper.registerModule(module);
         Shares shares = mapper.readValue(jsoni, Shares.class);
+        List<Share> shares1 = shares.getShares();
+        for (Share share : shares1) {
+            System.out.println(share.getId());
+        }
 
-
-        Mono<Object[]> response = webClient.get()
+        Mono<Shares> response = webClient.get()
                 .uri(uri_list)
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
-                .bodyToMono(Object[].class);
+                .bodyToMono(Shares.class);
 
 
 
-        return "response";
+        return response.block();
 
 
     }
@@ -369,21 +370,21 @@ class CustomDes extends StdDeserializer<Shares> {
     @Override
     public Shares deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
         Shares shares = new Shares();
+        List<Share> map = new ArrayList<>();
         JsonNode nextElement;
         ObjectCodec codec = jsonParser.getCodec();
         JsonNode node = codec.readTree(jsonParser);
-        if (node.path("marketdata").isMissingNode()) {
-            System.out.println("There is one");
-        }
+
         Iterator<JsonNode> rootElements = node.elements();
         while (rootElements.hasNext()) {
             nextElement = rootElements.next();
             if(nextElement.has("marketdata")) {
-//                StreamSupport.stream(nextElement.path("marketdata").spliterator(), false).collect(Collectors.toMap())
-
-
+                map = StreamSupport.stream(nextElement.path("marketdata").spliterator(), false).map(a -> {
+                    return new Share(a.get("SECID").asText(), a.get("LAST").asText());
+                }).collect(Collectors.toList());
             }
         }
+        shares.setShares(map);
         return shares;
     }
 }
