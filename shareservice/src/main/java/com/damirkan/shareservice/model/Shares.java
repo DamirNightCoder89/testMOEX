@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import java.util.List;
 
-//@JsonDeserialize(using = CustomDesirializer.class)
+@JsonDeserialize(using = CustomDesirializer.class)
 public class Shares {
     private List<Share> shares;
 
