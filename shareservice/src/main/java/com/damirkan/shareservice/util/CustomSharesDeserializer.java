@@ -27,7 +27,6 @@ public class CustomSharesDeserializer extends StdDeserializer<Shares> {
 
     @Override
     public Shares deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
-        Shares shares = new Shares();
         List<Share> map = new ArrayList<>();
         JsonNode nextElement;
         ObjectCodec codec = jsonParser.getCodec();
@@ -46,7 +45,7 @@ public class CustomSharesDeserializer extends StdDeserializer<Shares> {
                 }).collect(Collectors.toList());
             }
         }
-        shares.setData(map);
-        return shares;
+
+        return map.isEmpty() ? null : new Shares(map);
     }
 }
