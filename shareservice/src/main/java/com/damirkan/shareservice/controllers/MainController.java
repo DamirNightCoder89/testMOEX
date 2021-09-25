@@ -3,6 +3,8 @@ package com.damirkan.shareservice.controllers;
 import com.damirkan.shareservice.ShareserviceApplication;
 import com.damirkan.shareservice.model.Share;
 import com.damirkan.shareservice.model.Shares;
+import com.damirkan.shareservice.service.ShareService;
+import com.damirkan.shareservice.service.ShareServiceImplement;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.ObjectCodec;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import java.util.*;
@@ -34,39 +37,20 @@ import java.util.stream.Collectors;
 @RestController
 public class MainController {
 
-    private static final String BASE_URL = "https://iss.moex.com/iss";
-    private static final String SHARES_LIST_URL = "/engines/stock/markets/shares/securities.json?iss.meta=off&iss.version=off&iss.json=extended&iss.only=marketdata&marketdata.columns=SECID,LAST";
+    private  final ShareService shareService;
 
-    WebClient webClient = WebClient.builder().baseUrl(BASE_URL).build();
+    public MainController(ShareService shareService) {
+        this.shareService = shareService;
+    }
 
     @GetMapping("/shares/{id}")
-    public Shares retrive(@PathVariable String id) {
-        StringBuffer stringBuffer = new StringBuffer("/engines/stock/markets/shares/securities.json?securities=");
-        String share_uri = stringBuffer.append(id).append("&iss.meta=off&iss.version=off&iss.json=extended&iss.only=marketdata&marketdata.columns=SECID,LAST").toString();
-        Mono<Shares> response = webClient.get()
-                .uri(share_uri)
-                .accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .bodyToMono(Shares.class);
-        Shares shares = response.block();
-
-        return shares;
+    public Optional<Shares> retrive(@PathVariable String id) {
+        return shareService.getShares(id);
     }
 
     @GetMapping("/shares")
-    public CollectionModel<EntityModel<Share>> retrivee() throws JsonProcessingException {
-
-        Mono<Shares> response = webClient.get()
-                .uri(SHARES_LIST_URL)
-                .accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .bodyToMono(Shares.class);
-
-        Shares shares = response.block();
-
-        List<EntityModel<Share>> shares_list = shares.getShares().stream().map(share -> EntityModel.of(share)).collect(Collectors.toList());
-
-        return CollectionModel.of(shares_list);
+    public Optional<Shares> retrivee() {
+        return shareService.findAll();
     }
 }
 

@@ -16,12 +16,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-public class CustomDesirializer extends StdDeserializer<Shares> {
-    public CustomDesirializer() {
+public class CustomSharesDeserializer extends StdDeserializer<Shares> {
+    public CustomSharesDeserializer() {
         this(null);
     }
 
-    public CustomDesirializer(Class<?> vc) {
+    public CustomSharesDeserializer(Class<?> vc) {
         super(vc);
     }
 
@@ -42,11 +42,11 @@ public class CustomDesirializer extends StdDeserializer<Shares> {
             if(nextElement.has("marketdata")) {
                 System.out.println("marketdata true");
                 map = StreamSupport.stream(nextElement.path("marketdata").spliterator(), false).map(a -> {
-                    return new Share(a.get("SECID").asText(), a.get("LAST").asText());
+                    return new Share(a.get("BOARDID").asText(), a.get("SECID").asText(), a.get("LAST").asText());
                 }).collect(Collectors.toList());
             }
         }
-        shares.setShares(map);
+        shares.setData(map);
         return shares;
     }
 }

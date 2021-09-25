@@ -4,30 +4,41 @@ import org.springframework.lang.NonNull;
 
 
 public class Share{
-    public String id;
-    public String last;
+
+    private String boardId;
+    private String ticker;
+    private String lastPrice;
 
     public Share() {
     }
 
-    public Share(String id, String last) {
-        this.id = id;
-        this.last = last;
+    public Share(String boardId, String ticker, String lastPrice) {
+        this.boardId = boardId;
+        this.ticker = ticker;
+        this.lastPrice = lastPrice;
     }
 
-    public String getId() {
-        return id;
+    public String getBoardId() {
+        return boardId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setBoardId(String boardId) {
+        this.boardId = boardId;
     }
 
-    public String getLast() {
-        return last;
+    public String getTicker() {
+        return ticker;
     }
 
-    public void setLast(String last) {
-        this.last = last;
+    public void setTicker(String ticker) {
+        this.ticker = ticker;
+    }
+
+    public String getLastPrice() {
+        return lastPrice;
+    }
+
+    public void setLastPrice(String lastPrice) {
+        this.lastPrice = lastPrice;
     }
 }

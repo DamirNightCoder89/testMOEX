@@ -1,26 +1,26 @@
 package com.damirkan.shareservice.model;
 
-import com.damirkan.shareservice.util.CustomDesirializer;
+import com.damirkan.shareservice.util.CustomSharesDeserializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import java.util.List;
 
-@JsonDeserialize(using = CustomDesirializer.class)
+@JsonDeserialize(using = CustomSharesDeserializer.class)
 public class Shares {
-    private List<Share> shares;
+    private List<Share> data;
 
     public Shares() {
     }
 
-    public Shares(List<Share> shares) {
-        this.shares = shares;
+    public Shares(List<Share> data) {
+        this.data = data;
     }
 
-    public List<Share> getShares() {
-        return shares;
+    public List<Share> getData() {
+        return data;
     }
 
-    public void setShares(List<Share> shares) {
-        this.shares = shares;
+    public void setData(List<Share> data) {
+        this.data = data;
     }
 }
