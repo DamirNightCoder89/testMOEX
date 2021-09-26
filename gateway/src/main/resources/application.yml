@@ -1,0 +1,25 @@
+server:
+  port: 9191
+
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      routes:
+        - id: shareservice
+          uri: lb://shareservice
+          predicates:
+            - Path=/shares/**
+          filters:
+            - name: CircuitBreaker
+              args: shareservice
+              fallbackuri: forward:/userServiceFallBack
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    instance: localhost
