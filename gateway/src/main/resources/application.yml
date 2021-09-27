@@ -2,7 +2,7 @@ spring:
   application:
     name: gateway
   config:
-    import: "optional:configserver:"
+    import: "optional:configserver:http://configservice:8888"
   cloud:
     gateway:
       routes:
@@ -10,8 +10,4 @@ spring:
           uri: lb://shareservice
           predicates:
             - Path=/shares/**
-          filters:
-            - name: CircuitBreaker
-              args: shareservice
-              fallbackuri: forward:/userServiceFallBack
 

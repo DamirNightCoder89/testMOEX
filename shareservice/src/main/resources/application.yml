@@ -2,5 +2,5 @@ spring:
   application:
     name: shareservice
   config:
-    import: "optional:configserver:"
+    import: "optional:configserver:http://configservice:8888"
 
