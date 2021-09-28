@@ -1,6 +1,7 @@
 FROM java:8-jre
+WORKDIR /app
 
-ADD ./target/config.jar /app/
-CMD ["java", "-Xmx200m", "-jar", "/app/config.jar"]
+ADD ./target/configservice.jar .
+CMD ["java", "-Xmx200m", "-jar", "/app/configservice.jar"]
 
 EXPOSE 8888

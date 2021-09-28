@@ -1,6 +1,7 @@
 FROM java:8-jre
+WORKDIR /app
 
-ADD ./target/gateway.jar /app/
-CMD ["java", "-Xmx200m", "-jar", "/app/config.jar"]
+ADD ./target/gateway.jar .
+CMD ["java", "-Xmx200m", "-jar", "/app/gateway.jar"]
 
 EXPOSE 9191

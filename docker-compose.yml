@@ -1,0 +1,47 @@
+version: '3'
+services:
+  config:
+    build: configservice
+    restart: always
+    ports:
+      - 8888:8888
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+
+  registry:
+    build: registry
+    restart: always
+    depends_on:
+      - config
+    ports:
+      - 8761:8761
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+
+  gateway:
+    build: gateway
+    restart: always
+    depends_on:
+      - config
+    ports:
+      - 9191:9191
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+
+  shareservice:
+    build: shareservice
+    restart: always
+    depends_on:
+      - config
+    ports:
+      - 6001:6001
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
