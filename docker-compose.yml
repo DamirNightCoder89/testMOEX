@@ -1,6 +1,6 @@
 version: '3'
 services:
-  config:
+  configservice:
     build: configservice
     restart: always
     ports:
@@ -14,7 +14,7 @@ services:
     build: registry
     restart: always
     depends_on:
-      - config
+      - configservice
     ports:
       - 8761:8761
     logging:
@@ -26,7 +26,7 @@ services:
     build: gateway
     restart: always
     depends_on:
-      - config
+      - configservice
     ports:
       - 9191:9191
     logging:
@@ -38,7 +38,7 @@ services:
     build: shareservice
     restart: always
     depends_on:
-      - config
+      - configservice
     ports:
       - 6001:6001
     logging:
