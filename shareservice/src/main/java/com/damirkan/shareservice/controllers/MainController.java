@@ -38,6 +38,7 @@ public class MainController  {
     @GetMapping("/shares")
     public Shares retrivee() {
         Link link = WebMvcLinkBuilder.linkTo(MainController.class).withSelfRel();
+        System.out.println(link.toString());
 
         Shares shares = shareService.findAll()
                 .orElseThrow(() -> new ShareNotFoundException());

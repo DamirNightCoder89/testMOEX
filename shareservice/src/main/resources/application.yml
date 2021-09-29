@@ -1,7 +1,7 @@
 spring:
   application:
     name: shareservice
-  config:
-    import: "optional:configserver:http://configservice:8888"
-    fail-fast: true
+#  config:
+#    import: "optional:configserver:http://configservice:8888"
+#    fail-fast: true
 
