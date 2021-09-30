@@ -3,16 +3,21 @@ package com.damirkinapp.gateway;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
-import org.springframework.hateoas.EntityModel;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.servlet.support.*;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClient;
 
 import java.util.List;
 
 @SpringBootApplication
+@EnableConfigurationProperties(UriConfiguration.class)
 public class GateApp
 {
     public static void main( String[] args )
@@ -26,14 +31,7 @@ public class GateApp
         return builder.routes()
                 .route(p -> p
                         .path("/shares")
-                        .filters(f -> f.modifyResponseBody(Share.class, Share.class, ((serverWebExchange, share) -> share)))
-                        .uri(httpUri))
-                .route(p -> p
-                        .host("*.circuitbreaker.com")
-                        .filters(f -> f
-                                .circuitBreaker(config -> config
-                                        .setName("mycmd")
-                                        .setFallbackUri("forward:/fallback")))
+                        .filters(f -> f.addRequestHeader("link", WebDataBinder.))
                         .uri(httpUri))
                 .build();
     }
@@ -45,20 +43,20 @@ public class GateApp
         return Mono.just("fallback");
     }
 
-    @ConfigurationProperties
-    class UriConfiguration {
+}
 
-        private String httpbin = "http://localhost:6001";
+@ConfigurationProperties
+class UriConfiguration {
 
-        public String getHttpbin() {
-            return httpbin;
-        }
+    private String httpbin = "http://localhost:6001";
 
-        public void setHttpbin(String httpbin) {
-            this.httpbin = httpbin;
-        }
+    public String getHttpbin() {
+        return httpbin;
     }
 
+    public void setHttpbin(String httpbin) {
+        this.httpbin = httpbin;
+    }
 }
 
 class Share {

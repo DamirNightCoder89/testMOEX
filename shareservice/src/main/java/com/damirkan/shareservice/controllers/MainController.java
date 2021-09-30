@@ -10,9 +10,8 @@ import org.springframework.hateoas.server.core.LastInvocationAware;
 import org.springframework.hateoas.server.core.MethodInvocation;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.hateoas.server.reactive.WebFluxLinkBuilder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import reactor.netty.http.client.HttpClient;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -36,7 +35,9 @@ public class MainController  {
     }
 
     @GetMapping("/shares")
-    public Shares retrivee() {
+    public Shares retrivee(@RequestHeader("link") String rootLink) {
+        if (rootLink != null)
+            System.out.println(rootLink);
         Link link = WebMvcLinkBuilder.linkTo(MainController.class).withSelfRel();
         System.out.println(link.toString());
 
