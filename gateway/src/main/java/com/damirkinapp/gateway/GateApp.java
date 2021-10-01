@@ -7,12 +7,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.servlet.support.*;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import reactor.core.publisher.Mono;
-import reactor.netty.http.client.HttpClient;
 
 import java.util.List;
 
@@ -31,7 +27,6 @@ public class GateApp
         return builder.routes()
                 .route(p -> p
                         .path("/shares")
-                        .filters(f -> f.addRequestHeader("link", WebDataBinder.))
                         .uri(httpUri))
                 .build();
     }
