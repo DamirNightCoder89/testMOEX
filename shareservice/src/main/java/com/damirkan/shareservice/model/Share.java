@@ -1,9 +1,11 @@
 package com.damirkan.shareservice.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import org.springframework.hateoas.RepresentationModel;
 import org.springframework.lang.NonNull;
 
 
-public class Share{
+public class Share extends RepresentationModel<Share> {
 
     private String boardId;
     private String ticker;
