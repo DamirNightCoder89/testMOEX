@@ -4,13 +4,14 @@ spring:
 #  config:
 #    import: "optional:configserver:http://configservice:8888"
 #    fail-fast: true
-#  cloud:
-#    gateway:
-#      routes:
-#        - id: shareservice
-#          uri: lb://shareservice
-#          predicates:
-#            - Path=/shares/**
+  cloud:
+    gateway:
+      routes:
+        - id: shareservice
+#          uri: lb://localhost:6001
+          uri: lb://shareservice
+          predicates:
+            - Path=/shares/**
 
 server:
   port: 9191
