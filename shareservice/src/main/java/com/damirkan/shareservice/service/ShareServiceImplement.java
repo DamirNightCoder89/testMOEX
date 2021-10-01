@@ -33,7 +33,7 @@ public class ShareServiceImplement implements ShareService {
     }
 
     @Override
-    public Optional<Shares> getShares(String id) {
+    public Optional<Share> getShare(String id) {
         StringBuffer stringBuffer = new StringBuffer("/engines/stock/markets/shares/securities.json?securities=");
         String share_uri = stringBuffer.append(id).append("&iss.meta=off&iss.version=off&iss.json=extended&iss.only=marketdata&marketdata.columns=BOARDID,SECID,LAST").toString();
         Optional<Shares> response = webClient.get()
@@ -43,7 +43,7 @@ public class ShareServiceImplement implements ShareService {
                 .bodyToMono(Shares.class)
                 .onErrorResume(WebClientResponseException.class, ex -> ex.getRawStatusCode() == 404 ? Mono.empty() : Mono.error(ex))
                 .blockOptional();
-
-        return response;
+        
+        return response.get().getData().stream().findFirst();
     }
 }

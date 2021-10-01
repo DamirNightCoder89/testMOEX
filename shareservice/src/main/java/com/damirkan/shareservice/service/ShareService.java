@@ -10,5 +10,5 @@ public interface ShareService {
 
     Optional<Shares> findAll();
 
-    Optional<Shares> getShares(String id);
+    Optional<Share> getShare(String id);
 }

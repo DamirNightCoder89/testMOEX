@@ -1,6 +1,8 @@
 package com.damirkan.shareservice.controllers;
 
 import com.damirkan.shareservice.exeptions.ShareNotFoundException;
+import com.damirkan.shareservice.model.ResponseOfShare;
+import com.damirkan.shareservice.model.ResponseOfShares;
 import com.damirkan.shareservice.model.Share;
 import com.damirkan.shareservice.model.Shares;
 import com.damirkan.shareservice.service.ShareService;
@@ -27,26 +29,28 @@ public class MainController  {
     }
 
     @GetMapping("/shares/{id}")
-    public Shares retrive(@PathVariable String id) {
-        Shares shares = shareService.getShares(id)
+    public EntityModel<ResponseOfShare> shares(@PathVariable String id) throws NoSuchMethodException {
+        Share share = shareService.getShare(id)
                 .orElseThrow(() -> new ShareNotFoundException(id));
 
-        return shares;
+        Link selfLink = WebMvcLinkBuilder.linkTo(MainController.class, MainController.class.getMethod("shares")).slash(share.getTicker()).withSelfRel();
+
+        return EntityModel.of(new ResponseOfShare(share.add(selfLink)),
+                WebMvcLinkBuilder.linkTo(MainController.class, MainController.class.getMethod("shares")).withRel("shares"));   // EntityModel.of(shares, link)
     }
 
     @GetMapping("/shares")
-    public Shares retrivee() {
-        Link link = WebMvcLinkBuilder.linkTo(MainController.class).withSelfRel();
-        System.out.println(link.toString());
+    public EntityModel<ResponseOfShares> shares() throws NoSuchMethodException {
 
         Shares shares = shareService.findAll()
                 .orElseThrow(() -> new ShareNotFoundException());
         for (Share share : shares.getData()) {
-            share.add(WebMvcLinkBuilder.linkTo(MainController.class).slash(share.getTicker()).withSelfRel());
-
+            share.add(WebMvcLinkBuilder.linkTo(MainController.class, MainController.class.getMethod("shares")).slash(share.getTicker()).withSelfRel());
         }
 
-        return shares;
+        Link selfLink = WebMvcLinkBuilder.linkTo(MainController.class, MainController.class.getMethod("shares")).withSelfRel();
+
+        return EntityModel.of(new ResponseOfShares(shares.add(selfLink)));   // EntityModel.of(shares, link)
     }
 }
 
