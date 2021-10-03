@@ -8,7 +8,7 @@ services:
     logging:
       options:
         max-size: "10m"
-        max-file: "10"
+        max-file: "20"
 
   registry:
     build: registry
@@ -20,28 +20,43 @@ services:
     logging:
       options:
         max-size: "10m"
-        max-file: "10"
+        max-file: "20"
 
-  gateway:
-    build: gateway
-    restart: always
-    depends_on:
-      - configservice
-    ports:
-      - 9191:9191
-    logging:
-      options:
-        max-size: "10m"
-        max-file: "10"
-
-  shareservice:
-    build: shareservice
-    restart: always
-    depends_on:
-      - configservice
-    ports:
-      - 6001:6001
-    logging:
-      options:
-        max-size: "10m"
-        max-file: "10"
+#  gateway:
+#    build: gateway
+#    restart: always
+#    depends_on:
+#      - configservice
+#    ports:
+#      - 9191:9191
+#    logging:
+#      options:
+#        max-size: "10m"
+#        max-file: "20"
+#
+#  shareservice:
+#    build: shareservice
+#    restart: always
+#    depends_on:
+#      - configservice
+#    ports:
+#      - 6001:6001
+#    logging:
+#      options:
+#        max-size: "10m"
+#        max-file: "20"
+#
+#  historyservice:
+#    build: historyservice
+#    restart: always
+#    depends_on:
+#      - configservice
+#    ports:
+#      - 6002:6002
+#    logging:
+#      options:
+#        max-size: "10m"
+#        max-file: "20"
+#
+#  redis:
+#    image: "redis:alpine"

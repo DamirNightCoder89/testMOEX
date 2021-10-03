@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 
 @RestController
+@RequestMapping("/shares")
 public class MainController  {
 
     private  final ShareService shareService;
@@ -28,7 +29,7 @@ public class MainController  {
         this.shareService = shareService;
     }
 
-    @GetMapping("/shares/{id}")
+    @GetMapping("/{id}")
     public EntityModel<ResponseOfShare> shares(@PathVariable String id) throws NoSuchMethodException {
         Share share = shareService.getShare(id)
                 .orElseThrow(() -> new ShareNotFoundException(id));
@@ -36,10 +37,14 @@ public class MainController  {
         Link selfLink = WebMvcLinkBuilder.linkTo(MainController.class, MainController.class.getMethod("shares")).slash(share.getTicker()).withSelfRel();
 
         return EntityModel.of(new ResponseOfShare(share.add(selfLink)),
-                WebMvcLinkBuilder.linkTo(MainController.class, MainController.class.getMethod("shares")).withRel("shares"));   // EntityModel.of(shares, link)
+                WebMvcLinkBuilder.linkTo(MainController.class, MainController.class.getMethod("shares"))
+                        .withRel("shares"),
+                WebMvcLinkBuilder.linkTo(MainController.class).slash("histshares")
+                        .slash("fromDate").slash("toDate").withRel("historyShares")
+                );   // EntityModel.of(shares, link)
     }
 
-    @GetMapping("/shares")
+    @GetMapping("/")
     public EntityModel<ResponseOfShares> shares() throws NoSuchMethodException {
 
         Shares shares = shareService.findAll()
@@ -50,7 +55,10 @@ public class MainController  {
 
         Link selfLink = WebMvcLinkBuilder.linkTo(MainController.class, MainController.class.getMethod("shares")).withSelfRel();
 
-        return EntityModel.of(new ResponseOfShares(shares.add(selfLink)));   // EntityModel.of(shares, link)
+        return EntityModel.of(new ResponseOfShares(shares.add(selfLink)),
+                WebMvcLinkBuilder.linkTo(MainController.class).slash("histshares")
+                        .slash("fromDate").slash("toDate").withRel("historyShares"));   // EntityModel.of(shares, link)
+
     }
 }
 

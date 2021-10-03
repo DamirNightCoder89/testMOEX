@@ -6,15 +6,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class FallBackMethodController {
 
-    @GetMapping("/userServiceFallBack")
+    @GetMapping("/shareServiceFallBack")
     public String userServiceFallBackMethod() {
-        return "User Service is taking longer than Expected." +
+        return "Share Service is taking longer than Expected." +
                 " Please try again later";
     }
 
-    @GetMapping("/departmentServiceFallBack")
+    @GetMapping("/historyServiceFallBack")
     public String departmentServiceFallBackMethod() {
-        return "Department Service is taking longer than Expected." +
+        return "History Service is taking longer than Expected." +
                 " Please try again later";
     }
 }

@@ -38,6 +38,7 @@
 		<module>registry</module>
 		<module>configservice</module>
 		<module>gateway</module>
-	</modules>
+        <module>historyservice</module>
+    </modules>
 
 </project>

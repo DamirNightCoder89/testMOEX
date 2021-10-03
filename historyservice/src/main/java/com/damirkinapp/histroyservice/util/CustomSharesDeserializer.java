@@ -1,7 +1,7 @@
-package com.damirkan.shareservice.util;
+package com.damirkinapp.histroyservice.util;
 
-import com.damirkan.shareservice.model.Share;
-import com.damirkan.shareservice.model.Shares;
+import com.damirkinapp.histroyservice.model.HistShare;
+import com.damirkinapp.histroyservice.model.HistShares;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.ObjectCodec;
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-public class CustomSharesDeserializer extends StdDeserializer<Shares> {
+public class CustomSharesDeserializer extends StdDeserializer<HistShares> {
     public CustomSharesDeserializer() {
         this(null);
     }
@@ -26,8 +26,8 @@ public class CustomSharesDeserializer extends StdDeserializer<Shares> {
     }
 
     @Override
-    public Shares deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
-        List<Share> shareList = new ArrayList<>();
+    public HistShares deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+        List<HistShare> histShareList = new ArrayList<>();
         JsonNode nextElement;
         ObjectCodec codec = jsonParser.getCodec();
         JsonNode node = codec.readTree(jsonParser);
@@ -38,14 +38,15 @@ public class CustomSharesDeserializer extends StdDeserializer<Shares> {
         Iterator<JsonNode> rootElements = node.elements();
         while (rootElements.hasNext()) {
             nextElement = rootElements.next();
-            if(nextElement.has("marketdata")) {
-                System.out.println("marketdata true");
-                shareList = StreamSupport.stream(nextElement.path("marketdata").spliterator(), false).map(a -> {
-                    return new Share(a.get("BOARDID").asText(), a.get("SECID").asText(), a.get("LAST").asText());
+            if(nextElement.has("history")) {
+                histShareList = StreamSupport.stream(nextElement.path("history").spliterator(), false).map(a -> {
+                    return new HistShare(a.get("BOARDID").asText(),
+                            a.get("SECID").asText(), a.get("TRADEDATE").asText(),
+                            a.get("VALUE").asDouble(), a.get("OPEN").asDouble(),
+                            a.get("LOW").asDouble(), a.get("HIGH").asDouble());
                 }).collect(Collectors.toList());
             }
         }
-
-        return shareList.isEmpty() ? null : new Shares(shareList);
+        return histShareList.isEmpty() ? null : new HistShares(histShareList);
     }
 }

@@ -1,0 +1,10 @@
+server:
+  port: 6002
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://registry:8761/eureka/
+    instance: localhost

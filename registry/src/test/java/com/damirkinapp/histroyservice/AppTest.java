@@ -1,4 +1,4 @@
-package com.damirkinapp;
+package com.damirkinapp.histroyservice;
 
 //import static org.junit.Assert.assertTrue;
 //
