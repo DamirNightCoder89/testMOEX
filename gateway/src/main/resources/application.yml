@@ -1,7 +1,6 @@
 spring:
   application:
     name: gateway
-  jackson.serialization.indent_output: true
   config:
     import: "optional:configserver:http://configservice:8888"
     fail-fast: true
@@ -9,25 +8,25 @@ spring:
     gateway:
       routes:
         - id: shareservice
-#          uri: lb://localhost:6001
           uri: lb://shareservice
           predicates:
             - Path=/shares/**
           filters:
             - name: CircuitBreaker
               args:
-                name: myCircuitBreaker
+                name: myCircuitBreaker2
                 fallbackUri: forward:/shareServiceFallBack
         - id: historyservice
-            #          uri: lb://localhost:6001
-            uri: lb://historyservice
-            predicates:
-              - Path=/histshares/**
-            filters:
-              - name: CircuitBreaker
-                args:
-                  name: myCircuitBreaker
-                  fallbackUri: forward:/historyServiceFallBack
+          uri: lb://historyservice
+          predicates:
+            - Path=/histshares/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: myCircuitBreaker
+                fallbackUri: forward:/historyServiceFallBack
+
+
 
 
 management.endpoints.web.exposure.include: '*'
@@ -52,6 +51,3 @@ resilience4j.ratelimiter:
   configs:
     default:
       registerHealthIndicator: true
-
-server:
-  port: 9191

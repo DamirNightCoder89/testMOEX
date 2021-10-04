@@ -8,19 +8,10 @@ import com.damirkan.shareservice.model.Shares;
 import com.damirkan.shareservice.service.ShareService;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.server.core.LastInvocationAware;
-import org.springframework.hateoas.server.core.MethodInvocation;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
-import org.springframework.hateoas.server.reactive.WebFluxLinkBuilder;
 import org.springframework.web.bind.annotation.*;
-import reactor.netty.http.client.HttpClient;
-
-import java.util.*;
-import java.util.stream.Collectors;
-
 
 @RestController
-@RequestMapping("/shares")
 public class MainController  {
 
     private  final ShareService shareService;
@@ -29,7 +20,7 @@ public class MainController  {
         this.shareService = shareService;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/shares/{id}")
     public EntityModel<ResponseOfShare> shares(@PathVariable String id) throws NoSuchMethodException {
         Share share = shareService.getShare(id)
                 .orElseThrow(() -> new ShareNotFoundException(id));
@@ -40,11 +31,11 @@ public class MainController  {
                 WebMvcLinkBuilder.linkTo(MainController.class, MainController.class.getMethod("shares"))
                         .withRel("shares"),
                 WebMvcLinkBuilder.linkTo(MainController.class).slash("histshares")
-                        .slash("fromDate").slash("toDate").withRel("historyShares")
+                        .slash("ticker").slash("fromDate").slash("toDate").withRel("historyShares")
                 );   // EntityModel.of(shares, link)
     }
 
-    @GetMapping("/")
+    @GetMapping("/shares")
     public EntityModel<ResponseOfShares> shares() throws NoSuchMethodException {
 
         Shares shares = shareService.findAll()
@@ -57,7 +48,7 @@ public class MainController  {
 
         return EntityModel.of(new ResponseOfShares(shares.add(selfLink)),
                 WebMvcLinkBuilder.linkTo(MainController.class).slash("histshares")
-                        .slash("fromDate").slash("toDate").withRel("historyShares"));   // EntityModel.of(shares, link)
+                        .slash("ticker").slash("fromDate").slash("toDate").withRel("historyShares"));   // EntityModel.of(shares, link)
 
     }
 }
